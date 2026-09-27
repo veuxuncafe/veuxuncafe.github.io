@@ -60,6 +60,34 @@ git push
 > **本机 push 说明**：仓库已配置 SSH remote + 部署密钥（`core.sshCommand` 指向 `E:\pilot projects\.keys\woly_deploy`），所以在上面这个目录里 `git push` **不需要输密码**。
 > 但如果你要在**别的仓库**用 HTTPS 推，需要先跑一次：`git config --global http.sslBackend openssl`（本机 SChannel 后端有问题）。
 
+### 4. 写数学公式
+
+全站已经装了 MathJax（在 `_layouts/default.html` 里加载），文章里直接写 LaTeX 就会渲染。
+
+**但定界符必须用 `$$`，行内公式也是 `$$`。** 这是 kramdown 的规定：它**只认双美元号**，而且行内和行间共用同一个符号——写成单美元号的 `$x$` 完全不会被识别，会原样显示出来，里面的 `_`、`*` 还会交回 Markdown 处理（有被当成强调符号的风险）。
+
+```
+行内：设 $$\beta>0$$ 为正则强度。
+
+行间：两个 $$ 各自单独占一行，前后各留一个空行
+$$
+\mathcal{L} = \mathbb{E}\left[\log\sigma(\beta\Delta)\right]
+$$
+```
+
+几个要点：
+
+| 事项 | 说明 |
+|---|---|
+| 行内定界符 | `$$ ... $$`（**不是** `$ ... $`） |
+| 行间定界符 | 开头 `$$` 单独占一行，内容另起行，收尾 `$$` 也单独占一行；前后各留空行 |
+| 公式内容 | 会被原样送给 MathJax，**不经过 Markdown 处理**——所以 `_`、`*`、`\` 都不会被吃成斜体 |
+| 公式编号 | 用 `\tag{7}`，渲染成右对齐的 (7)。**没有 `\tag` 的行间公式不会被自动编号**，所以编号完全由你控制 |
+| `\text{}` 里别放中文 | MathJax 的 `\text{}` 用数学字体（MJXTEX），不含中文字形，中文会掉到浏览器默认字体上。标签写英文（`\text{weight}`），中文解释放正文 |
+| 多行对齐 | 用 `\begin{aligned} ... \end{aligned}`，换行写 `\\`，对齐点写 `&` |
+
+> **本机没法预览公式。** 文章的渲染由云端 GitHub Pages 完成，本地没有 Ruby/Jekyll。要检查公式写对没有，只能推上去之后刷新页面看。改公式时建议少量多次提交，出问题容易定位。
+
 ---
 
 ## 二、更新研究页
@@ -119,11 +147,11 @@ python -m http.server 8000
 | 路径 | 作用 | 要手动改吗 |
 |---|---|---|
 | `_posts/*.md` | **文章** | ✅ 新增文章 |
-| `_layouts/default.html` | 全站布局（header / 导航 / footer） | 改导航时 |
+| `_layouts/default.html` | 全站布局（header / 导航 / footer）+ **MathJax 加载** | 改导航时 |
 | `_layouts/post.html` | 文章页布局 | 很少 |
 | `index.html` | 首页（hero + 文章列表 + 引言） | 改首页文案时 |
 | `about.html` | 关于页 | 改自我介绍时 |
-| `styles.css` | 全部样式 | 调外观时 |
+| `styles.css` | 全部样式（含公式横向滚动 / 编号颜色） | 调外观时 |
 | `script.js` | 深浅色切换 + 首页分类筛选 | 很少 |
 | `_config.yml` | 站点配置（标题、作者、网址、baseurl） | 很少，**改 `baseurl` 会让全站资源 404，别乱动** |
 | `research/data/findings.json` | **研究数据** | ✅ 更新研究 |
