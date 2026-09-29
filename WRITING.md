@@ -193,25 +193,18 @@ GitHub 会在仓库 60 天无活动后禁用定时工作流；机器人的提交
 
 ---
 
-## 七、内容计划（待写）
+## 七、内容计划
 
 想写但还没写的选题记在这里，下次发新文章时从这里挑。
 
-### sigmoid 与 softmax（独立成一篇）
+**当前待写：暂无。**
 
-把「任意实数得分」变成概率的两个函数，写成一篇独立的基础解释篇。
+### 已发布
 
-要覆盖的内容：
+- **sigmoid / softmax / softplus** —— 2026-09-29 发布，见 `_posts/2026-09-29-sigmoid-softmax-softplus.md`
+  - 原计划只写 sigmoid 和 softmax 两个，发布时按要求加上了 softplus，三者合成一篇
+  - 立意：以 **logsumexp** 作为共同的根串起三者——softmax 是它的梯度，softplus 是它补一个 0 之后的一元版本，sigmoid 是 softmax 在 K = 2 时的特例、同时又是 softplus 的导数
+  - 明确不写：logits 不单独展开，只在需要处一句带过
+  - 与 DPO 那篇互相链接（DPO 里公式 (8) 是 softmax、(12)–(14) 是 sigmoid、损失可直接写成 softplus）
 
-- 两个函数的公式、值域、输入输出形状
-- **sigmoid 的性质**：`σ(−z) = 1 − σ(z)`；导数 `σ(z)·(1 − σ(z))`；反函数就是 logit（对数几率）
-- **softmax 的性质**：输出落在概率单纯形上（各分量 ∈ (0,1)、和为 1）；**平移不变性** `softmax(z + c) = softmax(z)`，所以起作用的只有 logit 之间的差
-- **重点：两者其实是同一个函数** —— `softmax([z_w, z_l])_w = σ(z_w − z_l)`，K = 2 时 softmax 退化成 sigmoid
-- **数值稳定写法**：`log_softmax` / `logsigmoid`，不要写 `log(softmax(x))` / `log(sigmoid(x))`
-- 温度的含义：`softmax(z/T)`
-
-**明确不写**：logits 不单独展开，只在需要的地方一句带过。
-
-**与已有文章的衔接**：可当作 DPO 那篇（`_posts/2026-09-27-dpo-core-derivation.md`）的前置阅读——那篇里公式 (8) 就是一个 softmax（所以说它是玻尔兹曼分布），公式 (12)–(14) 则是它的 K = 2 版本（sigmoid）。
-
-> 来源：2026-09-27 讨论 DPO 推导时的追问，当时已口头讲清，只需要落成文章。
+> 记录这条的背景：2026-09-27 讨论 DPO 推导时被问到 logits / sigmoid / softmax，当时口头讲清了，约定之后落成文章。
