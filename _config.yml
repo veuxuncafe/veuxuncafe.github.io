@@ -19,3 +19,5 @@ exclude:
   - WRITING.md
   - research/generate_progress.py
   - research/data
+  - math/generate_math.py
+  - math/data

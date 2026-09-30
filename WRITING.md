@@ -157,6 +157,9 @@ python -m http.server 8000
 | `research/data/findings.json` | **研究数据** | ✅ 更新研究 |
 | `research/generate_progress.py` | 研究页生成器（零依赖） | 加新章节时 |
 | `research/index.html` | 研究页产物 | ❌ **不要手改** |
+| `math/data/library.py` | **数学资源库内容源** | ✅ 增删条目 |
+| `math/generate_math.py` | 数学资源库生成器（零依赖） | 改版式时 |
+| `math/index.html` | 数学资源库产物 | ❌ **不要手改** |
 | `.github/workflows/daily-research-update.yml` | 云端每日自动更新 | 一般不动 |
 
 ---
@@ -208,3 +211,67 @@ GitHub 会在仓库 60 天无活动后禁用定时工作流；机器人的提交
   - 与 DPO 那篇互相链接（DPO 里公式 (8) 是 softmax、(12)–(14) 是 sigmoid、损失可直接写成 softplus）
 
 > 记录这条的背景：2026-09-27 讨论 DPO 推导时被问到 logits / sigmoid / softmax，当时口头讲清了，约定之后落成文章。
+
+---
+
+## 八、维护数学资源库
+
+地址 `https://veuxuncafe.github.io/math/`，导航里叫「数学」。用途：把做研究时反复要查的概念、符号、公式集中放一处，随时查。
+
+### 改内容：只改一个文件
+
+```
+math/data/library.py      ← 唯一真值
+```
+
+每个条目是一个 dict，字段含义：
+
+| 字段 | 内容 |
+|---|---|
+| `id` | 锚点短名，**全库唯一**，英文小写（`related` 靠它做链接） |
+| `term` / `en` | 中文术语 / 英文原词（英文名便于按论文里的说法检索） |
+| `topic` | 主题 id，必须是 `TOPICS` 里定义的那几个之一 |
+| `symbols` | `[(符号, 说明), ...]`，这是「查符号」的关键 |
+| `formula` | 展示公式，LaTeX |
+| `plain` | 一句话直观解释 |
+| `pitfalls` | 常见误解与坑（列表） |
+| `where` | 在你的研究/工作里的位置 |
+| `related` | 相关条目的 `id` 列表 |
+
+**文本字段支持两个行内标记**：`**粗体**` 和 `` `代码` ``。别的 Markdown 语法不会生效（页面是 `.html`，不经过 kramdown）。
+
+**公式写法**：行内用 `\( ... \)`，行间用 `\[ ... \]`。注意这是**页面级**的写法，和文章里 `$$` 那套不同——因为文章走 kramdown、这个页面不走。
+
+**LaTeX 一律用 raw 字符串**（`r"..."`）。普通字符串里 `\n`、`\t`、`\b` 会被 Python 当成转义符，静默毁掉公式。
+
+### 改完生成
+
+```bash
+cd "E:\pilot projects\WOLyosemite.github.io"
+python math/generate_math.py        # 重新生成 math/index.html
+git add . && git commit -m "math: 更新资源库" && git push
+```
+
+生成器带四道自检，任一条不通过就**拒绝写盘**（不会上线坏页面）：
+
+1. `id` 唯一、`related` 指向存在的条目、主题合法、必填字段齐全
+2. 输出里不含 Liquid 定界符（`{{` / `{%`）
+3. 公式定界符配对
+4. 原始字符串里没有危险的 LaTeX 转义
+
+> ⚠️ **不要手改 `math/index.html`** —— 它是生成产物，下次生成会被覆盖。要改内容只改 `library.py`；要改版式改 `generate_math.py` 里的 `STYLE` / `SCRIPT`。
+
+### 本地预览
+
+和别处一样，双击打开看不到导航和样式（它是 Jekyll 内容页，要经布局渲染）：
+
+```bash
+cd "E:\pilot projects\WOLyosemite.github.io"
+python -m http.server 8000
+```
+
+### 已收录的 30 条
+
+按主题分：概率与信息论 9 · 优化与凸性 8 · 微积分与自动微分 5 · 数值与精度 2 · 偏好优化 6。
+
+条目来源是 2026-09-27 至 09-29 讨论 DPO 推导与数学基础时被问到的问题，所以 `where` 字段大多指向偏好优化的工作。以后有新的疑问，直接加条目即可——这个库的定位就是「问过什么就沉淀什么」。

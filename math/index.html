@@ -1,0 +1,674 @@
+---
+layout: default
+title: 数学资源库 | veuxuncafe
+description: 研究常用概念、符号与公式的速查库：定义、公式、常见误解，以及在偏好优化工作里的位置。
+---
+<style>
+.ml-lead{color:var(--muted);max-width:780px;margin:-26px 0 30px;font-size:1.02rem;line-height:1.8}
+.ml-bar{display:flex;flex-wrap:wrap;gap:14px 26px;align-items:center;justify-content:space-between;
+  padding:16px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.ml-bar input[type=search]{flex:1 1 240px;max-width:400px;padding:9px 12px;font:inherit;font-size:.9rem;
+  color:inherit;background:var(--surface);border:1px solid var(--line);border-radius:6px}
+.ml-bar input[type=search]:focus{outline:none;border-color:var(--accent)}
+.ml-bar .filters{flex-wrap:wrap;row-gap:8px}
+.ml-count{color:var(--muted);font-size:.82rem;margin:14px 0 0}
+.ml-list{display:grid;gap:18px;margin-top:20px}
+.ml-card{border:1px solid var(--line);border-radius:10px;background:var(--surface);padding:20px 22px}
+.ml-card[hidden]{display:none}
+.ml-head{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+.ml-head h2{font-size:1.16rem;margin:0;font-weight:600}
+.ml-head .ml-en{color:var(--muted);font-size:.82rem}
+.ml-tag{margin-left:auto;font-size:.72rem;color:var(--accent);border:1px solid var(--accent);
+  border-radius:999px;padding:2px 9px;white-space:nowrap}
+.ml-sym{display:grid;grid-template-columns:auto 1fr;gap:3px 16px;margin:15px 0 0;font-size:.9rem}
+.ml-sym dt{margin:0}
+.ml-sym dd{margin:0;color:var(--muted)}
+.ml-formula{margin:16px 0;padding:12px 14px;border:1px solid var(--line);border-radius:8px;
+  background:var(--bg);overflow-x:auto}
+.ml-plain{font-size:.95rem;line-height:1.78;margin:0 0 12px}
+.ml-pit{list-style:none;padding:0;margin:0 0 12px;font-size:.88rem;line-height:1.72;color:var(--muted)}
+.ml-pit li{padding-left:15px;position:relative}
+.ml-pit li::before{content:"\00b7";position:absolute;left:3px;color:var(--accent)}
+.ml-where{font-size:.88rem;line-height:1.72;margin:0 0 10px;padding:10px 13px;border-radius:6px;
+  background:var(--accent-soft)}
+.ml-rel{font-size:.8rem;color:var(--muted);margin:0}
+.ml-rel a{border-bottom:1px solid var(--line)}
+.ml-rel a:hover{color:var(--accent);border-color:var(--accent)}
+.ml-nohit{color:var(--muted);font-size:.9rem;padding:22px 0;display:none}
+.ml-nohit[hidden]{display:none}
+.ml-meta{color:var(--muted);font-size:.8rem;margin-top:40px;line-height:1.7}
+@media (max-width:700px){.ml-sym{grid-template-columns:1fr;gap:2px}
+  .ml-sym dd{margin:0 0 7px}.ml-card{padding:16px}.ml-tag{margin-left:0}}
+</style>
+<main class="page container">
+  <p class="eyebrow">MATH NOTES</p>
+  <h1>数学资源库</h1>
+  <p class="ml-lead">把做研究时反复要查的概念、符号和公式集中放在这里。每条只讲三件事：<strong>它是什么</strong>、<strong>公式长什么样</strong>、<strong>容易在哪里想错</strong>，最后一句说明它在你手上的工作里出现在哪。公式由 MathJax 渲染，可直接选中复制。</p>
+  <div class="ml-bar">
+    <input id="ml-q" type="search" placeholder="搜索术语、符号、解释…" aria-label="搜索" autocomplete="off">
+    <div class="filters" role="group" aria-label="主题筛选">
+      <button class="filter active" type="button" data-ml-topic="all">全部 30</button>
+      <button class="filter" type="button" data-ml-topic="prob">概率与信息论 9</button>
+      <button class="filter" type="button" data-ml-topic="opt">优化与凸性 8</button>
+      <button class="filter" type="button" data-ml-topic="calc">微积分与自动微分 5</button>
+      <button class="filter" type="button" data-ml-topic="num">数值与精度 2</button>
+      <button class="filter" type="button" data-ml-topic="dpo">偏好优化 6</button>
+    </div>
+  </div>
+  <p class="ml-count" id="ml-count"></p>
+  <p class="ml-nohit" id="ml-nohit" hidden>没有匹配的条目，换个关键词试试。</p>
+  <div class="ml-list" id="ml-list">
+      <article class="ml-card" id="logits" data-topic="prob" data-search="logits（得分） logits 神经网络最后一层线性输出的实数得分，尚未归一化：不要求和为 1，也没有上下界。 z_j 第 j 类的原始得分，可正可负 k 类别数（语言模型里是词表大小 v） 只有同一次前向内部的 logits 之间可比较；不同输入的 logits 绝对值没有意义。 语言模型的 logits 形状是 [batch, seq, vocab]；而 dpo 代码里那个叫 logits 的变量是「二元分类的 logit」，是一个标量——同名不同物。 模型每次前向的输出；π_θ(y|x) 要先由 logits 经 softmax 再按 token 连乘。 概率与信息论">
+      <div class="ml-head">
+      <h2>logits（得分）</h2>
+      <span class="ml-en">logits</span>
+      <span class="ml-tag">概率与信息论</span>
+      </div>
+      <dl class="ml-sym">
+      <dt>\(z_j\)</dt><dd>第 j 类的原始得分，可正可负</dd>
+      <dt>\(K\)</dt><dd>类别数（语言模型里是词表大小 V）</dd>
+      </dl>
+      <div class="ml-formula">\[ z \;=\; \big[\,W h + b\,\big]\in\mathbb{R}^{K} \]</div>
+      <p class="ml-plain">神经网络最后一层线性输出的实数得分，尚未归一化：不要求和为 1，也没有上下界。</p>
+      <ul class="ml-pit">
+      <li>只有同一次前向内部的 logits 之间可比较；不同输入的 logits 绝对值没有意义。</li>
+      <li>语言模型的 logits 形状是 [batch, seq, vocab]；而 DPO 代码里那个叫 logits 的变量是「二元分类的 logit」，是一个标量——同名不同物。</li>
+      </ul>
+      <p class="ml-where">模型每次前向的输出；π_θ(y|x) 要先由 logits 经 softmax 再按 token 连乘。</p>
+      <p class="ml-rel">相关：<a href="#softmax">softmax</a>、<a href="#temperature">温度</a>、<a href="#logsumexp">对数域技巧 log-sum-exp</a></p>
+      </article>
+      <article class="ml-card" id="softmax" data-topic="prob" data-search="softmax softmax function 先取指数、再归一化：把任意实数得分变成概率分布（各分量在 (0,1)、和为 1）。 z logits 向量 \mathrm{softmax}(z)_i 第 i 类的概率 平移不变：\(\mathrm{softmax}(z+c)=\mathrm{softmax}(z)\)，所以起作用的只有得分之间的差。 \(k=2\) 时它就是 sigmoid：\(\mathrm{softmax}([z_w,z_l])_w=\sigma(z_w-z_l)\)。 实现必须先减最大值，否则指数上溢。 语言模型的下一个 token 分布；dpo 里的最优策略也是回答空间上的 softmax。 概率与信息论">
+      <div class="ml-head">
+      <h2>softmax</h2>
+      <span class="ml-en">softmax function</span>
+      <span class="ml-tag">概率与信息论</span>
+      </div>
+      <dl class="ml-sym">
+      <dt>\(z\)</dt><dd>logits 向量</dd>
+      <dt>\(\mathrm{softmax}(z)_i\)</dt><dd>第 i 类的概率</dd>
+      </dl>
+      <div class="ml-formula">\[ \mathrm{softmax}(z)_i=\frac{e^{z_i}}{\sum_{j=1}^{K}e^{z_j}} \]</div>
+      <p class="ml-plain">先取指数、再归一化：把任意实数得分变成概率分布（各分量在 (0,1)、和为 1）。</p>
+      <ul class="ml-pit">
+      <li><strong>平移不变</strong>：\(\mathrm{softmax}(z+c)=\mathrm{softmax}(z)\)，所以起作用的只有得分之间的差。</li>
+      <li>\(K=2\) 时它就是 sigmoid：\(\mathrm{softmax}([z_w,z_l])_w=\sigma(z_w-z_l)\)。</li>
+      <li>实现必须先减最大值，否则指数上溢。</li>
+      </ul>
+      <p class="ml-where">语言模型的下一个 token 分布；DPO 里的最优策略也是回答空间上的 softmax。</p>
+      <p class="ml-rel">相关：<a href="#logits">logits（得分）</a>、<a href="#sigmoid">sigmoid（logistic 函数）</a>、<a href="#temperature">温度</a>、<a href="#logsumexp">对数域技巧 log-sum-exp</a></p>
+      </article>
+      <article class="ml-card" id="sigmoid" data-topic="prob" data-search="sigmoid（logistic 函数） logistic sigmoid 把任意实数压到 (0,1)，用作二分类概率。它等于 \(k=2\) 的 softmax。 \sigma(z) 概率，值域 (0,1) \sigma(-z)=1-\sigma(z) 对称性 「sigmoid」是一族形状（tanh、arctan、erf 都算），logistic 是其中特定的一个；在机器学习里不加限定时 sigmoid 就指 logistic。 它区别于其它 s 形函数的本质是：反函数是 logit（对数几率），所以能做「奖励差 = 对数几率」的解释。 bradley–terry 的连接函数，因此直接出现在 dpo 损失里。 概率与信息论">
+      <div class="ml-head">
+      <h2>sigmoid（logistic 函数）</h2>
+      <span class="ml-en">logistic sigmoid</span>
+      <span class="ml-tag">概率与信息论</span>
+      </div>
+      <dl class="ml-sym">
+      <dt>\(\sigma(z)\)</dt><dd>概率，值域 (0,1)</dd>
+      <dt>\(\sigma(-z)=1-\sigma(z)\)</dt><dd>对称性</dd>
+      </dl>
+      <div class="ml-formula">\[ \sigma(z)=\frac{1}{1+e^{-z}},\qquad \frac{d\sigma}{dz}=\sigma(z)\big(1-\sigma(z)\big) \]</div>
+      <p class="ml-plain">把任意实数压到 (0,1)，用作二分类概率。它等于 \(K=2\) 的 softmax。</p>
+      <ul class="ml-pit">
+      <li><strong>「sigmoid」是一族形状（tanh、arctan、erf 都算），logistic 是其中特定的一个</strong>；在机器学习里不加限定时 sigmoid 就指 logistic。</li>
+      <li>它区别于其它 S 形函数的本质是：反函数是 logit（对数几率），所以能做「奖励差 = 对数几率」的解释。</li>
+      </ul>
+      <p class="ml-where">Bradley–Terry 的连接函数，因此直接出现在 DPO 损失里。</p>
+      <p class="ml-rel">相关：<a href="#softmax">softmax</a>、<a href="#bce">二元交叉熵 BCE</a>、<a href="#bt">Bradley–Terry 模型</a></p>
+      </article>
+      <article class="ml-card" id="softplus" data-topic="prob" data-search="softplus softplus relu 的光滑版本，处处可导、值域 \((0,\infty)\)。 \zeta(z) 值域 (0,∞) \zeta&#x27;(z)=\sigma(z) 导数是 sigmoid 它不是概率函数（值域不是 (0,1)），不要和 sigmoid 混。 数值上要用 \(\max(z,0)+\log(1+e^{-|z|})\)，直接算 \(\log(1+e^z)\) 在 z 很大时会先上溢。 \(-\log\sigma(z)=\mathrm{softplus}(-z)\)，这就是实现里 \(-\texttt{f.logsigmoid}\) 的由来。 概率与信息论">
+      <div class="ml-head">
+      <h2>softplus</h2>
+      <span class="ml-en">softplus</span>
+      <span class="ml-tag">概率与信息论</span>
+      </div>
+      <dl class="ml-sym">
+      <dt>\(\zeta(z)\)</dt><dd>值域 (0,∞)</dd>
+      <dt>\(\zeta&#x27;(z)=\sigma(z)\)</dt><dd>导数是 sigmoid</dd>
+      </dl>
+      <div class="ml-formula">\[ \zeta(z)=\log\big(1+e^{z}\big) \]</div>
+      <p class="ml-plain">ReLU 的光滑版本，处处可导、值域 \((0,\infty)\)。</p>
+      <ul class="ml-pit">
+      <li><strong>它不是概率函数</strong>（值域不是 (0,1)），不要和 sigmoid 混。</li>
+      <li>数值上要用 \(\max(z,0)+\log(1+e^{-|z|})\)，直接算 \(\log(1+e^z)\) 在 z 很大时会先上溢。</li>
+      </ul>
+      <p class="ml-where">\(-\log\sigma(z)=\mathrm{softplus}(-z)\)，这就是实现里 \(-\texttt{F.logsigmoid}\) 的由来。</p>
+      <p class="ml-rel">相关：<a href="#sigmoid">sigmoid（logistic 函数）</a>、<a href="#bce">二元交叉熵 BCE</a>、<a href="#logsumexp">对数域技巧 log-sum-exp</a></p>
+      </article>
+      <article class="ml-card" id="bce" data-topic="prob" data-search="二元交叉熵 bce binary cross-entropy / log loss 二分类的负对数似然：它衡量「你给正确类别的概率有多低」。\(y=1\) 时就是 \(-\log\hat y\)。 y\in\{0,1\} 真实标签 \hat y\in(0,1) 预测概率 它是 proper scoring rule，所以奖励「诚实的概率」，而不是「拍胸脯的 0.99」。 互斥多类要用 softmax 交叉熵，不能用 v 个 sigmoid；后者允许概率加起来不等于 1。 实现要用 logits 版本（\(\texttt{binary\_cross\_entropy\_with\_logits}\)），不能写 \(\log(\mathrm{sigmoid}(z))\)。 dpo 损失就是这个式子、标签恒为 1；gold nll 是它的 k 类推广。 概率与信息论">
+      <div class="ml-head">
+      <h2>二元交叉熵 BCE</h2>
+      <span class="ml-en">binary cross-entropy / log loss</span>
+      <span class="ml-tag">概率与信息论</span>
+      </div>
+      <dl class="ml-sym">
+      <dt>\(y\in\{0,1\}\)</dt><dd>真实标签</dd>
+      <dt>\(\hat y\in(0,1)\)</dt><dd>预测概率</dd>
+      </dl>
+      <div class="ml-formula">\[ \mathcal{L}_{\mathrm{BCE}}(\hat y,y)=-\Big[y\log\hat y+(1-y)\log(1-\hat y)\Big] \]</div>
+      <p class="ml-plain">二分类的负对数似然：它衡量「你给正确类别的概率有多低」。\(y=1\) 时就是 \(-\log\hat y\)。</p>
+      <ul class="ml-pit">
+      <li>它是 proper scoring rule，所以奖励「诚实的概率」，而不是「拍胸脯的 0.99」。</li>
+      <li>互斥多类要用 softmax 交叉熵，不能用 V 个 sigmoid；后者允许概率加起来不等于 1。</li>
+      <li>实现要用 logits 版本（\(\texttt{binary\_cross\_entropy\_with\_logits}\)），不能写 \(\log(\mathrm{sigmoid}(z))\)。</li>
+      </ul>
+      <p class="ml-where">DPO 损失就是这个式子、标签恒为 1；gold NLL 是它的 K 类推广。</p>
+      <p class="ml-rel">相关：<a href="#cross-entropy-kl">熵、交叉熵与 KL</a>、<a href="#dpo-loss">DPO 损失</a>、<a href="#numerical">数值稳定性（上溢／下溢）</a></p>
+      </article>
+      <article class="ml-card" id="cross-entropy-kl" data-topic="prob" data-search="熵、交叉熵与 kl entropy / cross-entropy / kl divergence 交叉熵 = 熵 + kl。硬标签（one-hot）时 \(h(p)=0\)，所以交叉熵与 kl 数值完全相等——这是「感觉它们差不多」的精确来源。 h(p) 熵：p 自身的不确定性 h(p,q) 交叉熵：真实是 p、却按 q 编码的平均代价 d_{\mathrm{kl}}(p\|q) kl：用错分布的额外代价 rlhf 里的参考分布不是 one-hot，此时 \(d_{\mathrm{kl}}(\pi\|\pi_{\mathrm{ref}})=h(\pi,\pi_{\mathrm{ref}})-h(\pi)\)，不能用「到参考模型的交叉熵」替代 kl——那会连策略自身的熵一起压，把模型推向确定化。 单位：以 2 为底是 bits，以 e 为底是 nats；语言模型与 rlhf 全程用 nats。 \(\log(\pi_\theta/\pi_{\mathrm{ref}})\) 这个到处出现的对数比就是 kl 的被积函数。 概率与信息论">
+      <div class="ml-head">
+      <h2>熵、交叉熵与 KL</h2>
+      <span class="ml-en">entropy / cross-entropy / KL divergence</span>
+      <span class="ml-tag">概率与信息论</span>
+      </div>
+      <dl class="ml-sym">
+      <dt>\(H(p)\)</dt><dd>熵：p 自身的不确定性</dd>
+      <dt>\(H(p,q)\)</dt><dd>交叉熵：真实是 p、却按 q 编码的平均代价</dd>
+      <dt>\(D_{\mathrm{KL}}(p\|q)\)</dt><dd>KL：用错分布的额外代价</dd>
+      </dl>
+      <div class="ml-formula">\[ H(p,q)=H(p)+D_{\mathrm{KL}}(p\|q) \]</div>
+      <p class="ml-plain">交叉熵 = 熵 + KL。<strong>硬标签（one-hot）时 \(H(p)=0\)，所以交叉熵与 KL 数值完全相等</strong>——这是「感觉它们差不多」的精确来源。</p>
+      <ul class="ml-pit">
+      <li>RLHF 里的参考分布不是 one-hot，此时 \(D_{\mathrm{KL}}(\pi\|\pi_{\mathrm{ref}})=H(\pi,\pi_{\mathrm{ref}})-H(\pi)\)，<strong>不能用「到参考模型的交叉熵」替代 KL</strong>——那会连策略自身的熵一起压，把模型推向确定化。</li>
+      <li>单位：以 2 为底是 bits，以 e 为底是 nats；语言模型与 RLHF 全程用 nats。</li>
+      </ul>
+      <p class="ml-where">\(\log(\pi_\theta/\pi_{\mathrm{ref}})\) 这个到处出现的对数比就是 KL 的被积函数。</p>
+      <p class="ml-rel">相关：<a href="#bce">二元交叉熵 BCE</a>、<a href="#mle">最大似然估计 MLE</a>、<a href="#temperature">温度</a></p>
+      </article>
+      <article class="ml-card" id="mle" data-topic="prob" data-search="最大似然估计 mle maximum likelihood estimation 让观测到的数据在模型下概率最大；等价于最小化与经验分布的交叉熵。 \theta 待估参数 \log p_\theta(y_i\mid x_i) 第 i 条数据的对数似然 一般没有闭式解——logistic 回归就是标准反例，必须迭代。 最大化似然不等于最大化准确率；样本少时容易过拟合。 dpo 的训练就是 bradley–terry 偏好模型的 mle；rlhf 里拟合奖励模型也是 mle。 概率与信息论">
+      <div class="ml-head">
+      <h2>最大似然估计 MLE</h2>
+      <span class="ml-en">maximum likelihood estimation</span>
+      <span class="ml-tag">概率与信息论</span>
+      </div>
+      <dl class="ml-sym">
+      <dt>\(\theta\)</dt><dd>待估参数</dd>
+      <dt>\(\log p_\theta(y_i\mid x_i)\)</dt><dd>第 i 条数据的对数似然</dd>
+      </dl>
+      <div class="ml-formula">\[ \hat\theta=\operatorname*{arg\,max}_{\theta}\;\sum_i \log p_\theta(y_i\mid x_i) \]</div>
+      <p class="ml-plain">让观测到的数据在模型下概率最大；等价于最小化与经验分布的交叉熵。</p>
+      <ul class="ml-pit">
+      <li>一般<strong>没有闭式解</strong>——logistic 回归就是标准反例，必须迭代。</li>
+      <li>最大化似然不等于最大化准确率；样本少时容易过拟合。</li>
+      </ul>
+      <p class="ml-where">DPO 的训练就是 Bradley–Terry 偏好模型的 MLE；RLHF 里拟合奖励模型也是 MLE。</p>
+      <p class="ml-rel">相关：<a href="#bce">二元交叉熵 BCE</a>、<a href="#bt">Bradley–Terry 模型</a>、<a href="#closed-form">闭式解</a></p>
+      </article>
+      <article class="ml-card" id="bt" data-topic="prob" data-search="bradley–terry 模型 bradley–terry model 用「潜奖励 + logistic 噪声」建模人类偏好：偏好概率等于奖励差的 sigmoid。 y_w 偏好回答／正确回答（dpo 原文 chosen） y_l 非偏好回答／负例回答（dpo 原文 rejected） 它假设偏好可传递、噪声独立同分布、且只有一个潜标量——现实中这些都不严格成立。 奖励只在同一条 prompt 内的差可识别；跨 prompt 存在未知的常数偏移。 dpo 推导第五步代入的就是它，配分函数在相减时对消。 概率与信息论">
+      <div class="ml-head">
+      <h2>Bradley–Terry 模型</h2>
+      <span class="ml-en">Bradley–Terry model</span>
+      <span class="ml-tag">概率与信息论</span>
+      </div>
+      <dl class="ml-sym">
+      <dt>\(y_w\)</dt><dd>偏好回答／正确回答（DPO 原文 chosen）</dd>
+      <dt>\(y_l\)</dt><dd>非偏好回答／负例回答（DPO 原文 rejected）</dd>
+      </dl>
+      <div class="ml-formula">\[ \Pr(y_w\succ y_l\mid x)=\sigma\big(r(x,y_w)-r(x,y_l)\big) \]</div>
+      <p class="ml-plain">用「潜奖励 + logistic 噪声」建模人类偏好：偏好概率等于奖励差的 sigmoid。</p>
+      <ul class="ml-pit">
+      <li>它假设偏好可传递、噪声独立同分布、且只有一个潜标量——现实中这些都不严格成立。</li>
+      <li>奖励只在<strong>同一条 prompt 内</strong>的差可识别；跨 prompt 存在未知的常数偏移。</li>
+      </ul>
+      <p class="ml-where">DPO 推导第五步代入的就是它，配分函数在相减时对消。</p>
+      <p class="ml-rel">相关：<a href="#sigmoid">sigmoid（logistic 函数）</a>、<a href="#dpo-loss">DPO 损失</a>、<a href="#margin">margin 与 margin loss</a></p>
+      </article>
+      <article class="ml-card" id="temperature" data-topic="prob" data-search="温度 temperature 温度控制分布的锐度：越小越接近 argmax（硬），越大越接近均匀（软）。 t 温度，t→0 越尖，t→∞ 越平 把 logits 乘一个系数等价于把温度除以它，所以「缩放 logit」和「调温度」是同一件事。 dpo 的 \(\beta\) 就是温度，不是间隔阈值；把它当 margin 调会调错方向。 \(\pi^*(y\mid x)\propto\pi_{\mathrm{ref}}(y\mid x)\exp(r/\beta)\) 里的 β 与损失里的 β 是同一个。 概率与信息论">
+      <div class="ml-head">
+      <h2>温度</h2>
+      <span class="ml-en">temperature</span>
+      <span class="ml-tag">概率与信息论</span>
+      </div>
+      <dl class="ml-sym">
+      <dt>\(T\)</dt><dd>温度，T→0 越尖，T→∞ 越平</dd>
+      </dl>
+      <div class="ml-formula">\[ \mathrm{softmax}(z/T)_i=\frac{e^{z_i/T}}{\sum_j e^{z_j/T}} \]</div>
+      <p class="ml-plain">温度控制分布的锐度：越小越接近 argmax（硬），越大越接近均匀（软）。</p>
+      <ul class="ml-pit">
+      <li><strong>把 logits 乘一个系数等价于把温度除以它</strong>，所以「缩放 logit」和「调温度」是同一件事。</li>
+      <li>DPO 的 \(\beta\) 就是温度，<strong>不是间隔阈值</strong>；把它当 margin 调会调错方向。</li>
+      </ul>
+      <p class="ml-where">\(\pi^*(y\mid x)\propto\pi_{\mathrm{ref}}(y\mid x)\exp(r/\beta)\) 里的 β 与损失里的 β 是同一个。</p>
+      <p class="ml-rel">相关：<a href="#softmax">softmax</a>、<a href="#dpo-loss">DPO 损失</a></p>
+      </article>
+      <article class="ml-card" id="closed-form" data-topic="opt" data-search="闭式解 closed-form solution 把已知量代进一个显式公式就能算出答案，不需要迭代逼近。它说的是答案的形式，不是难度。 a,b,c 二次方程的系数 存在 ≠ 可计算：dpo 的最优策略有闭式形式，但里面的配分函数 \(z(x)\) 对全部回答求和，算不出来。 闭式不一定快：\((a^{\top}a)^{-1}a^{\top}b\) 是 o(n³)，数值上往往不如迭代法。 五次及以上的一般多项式没有根式解（abel–ruffini），这是被证明的不可能，不是「还没找到」。 rlhf 目标的最优策略有闭式解 → 这是 rl 循环能被消掉的原因；但 dpo 损失的最优参数没有闭式解，仍然 sgd。 优化与凸性">
+      <div class="ml-head">
+      <h2>闭式解</h2>
+      <span class="ml-en">closed-form solution</span>
+      <span class="ml-tag">优化与凸性</span>
+      </div>
+      <dl class="ml-sym">
+      <dt>\(a,b,c\)</dt><dd>二次方程的系数</dd>
+      </dl>
+      <div class="ml-formula">\[ x=\frac{-b\pm\sqrt{b^2-4ac}}{2a} \]</div>
+      <p class="ml-plain">把已知量代进一个显式公式就能算出答案，不需要迭代逼近。它说的是<strong>答案的形式</strong>，不是难度。</p>
+      <ul class="ml-pit">
+      <li><strong>存在 ≠ 可计算</strong>：DPO 的最优策略有闭式形式，但里面的配分函数 \(Z(x)\) 对全部回答求和，算不出来。</li>
+      <li>闭式不一定快：\((A^{\top}A)^{-1}A^{\top}b\) 是 O(n³)，数值上往往不如迭代法。</li>
+      <li>五次及以上的一般多项式<strong>没有</strong>根式解（Abel–Ruffini），这是被证明的不可能，不是「还没找到」。</li>
+      </ul>
+      <p class="ml-where">RLHF 目标的最优<strong>策略</strong>有闭式解 → 这是 RL 循环能被消掉的原因；但 DPO 损失的最优<strong>参数</strong>没有闭式解，仍然 SGD。</p>
+      <p class="ml-rel">相关：<a href="#convexity">凸性与唯一最优</a>、<a href="#kkt">KKT 条件</a>、<a href="#partition">配分函数与它的对消</a>、<a href="#mle">最大似然估计 MLE</a></p>
+      </article>
+      <article class="ml-card" id="convexity" data-topic="opt" data-search="凸性与唯一最优 convexity 凸目标 + 凸约束 ⇒ kkt 条件既必要又充分，驻点就是全局最优。这是「直接上拉格朗日」的合法性依据。 f 目标函数 \lambda\in[0,1] 内插系数 要严格凹才有唯一最优，否则可能一整段都是最优解。 神经网络的损失一般非凸，此时 kkt 只是必要条件，不能用来宣称找到全局最优。 dpo 逐 prompt 的目标含负熵项、严格凹，约束是概率单纯形（凸）——所以第一步的推导是真解而非启发式。 优化与凸性">
+      <div class="ml-head">
+      <h2>凸性与唯一最优</h2>
+      <span class="ml-en">convexity</span>
+      <span class="ml-tag">优化与凸性</span>
+      </div>
+      <dl class="ml-sym">
+      <dt>\(f\)</dt><dd>目标函数</dd>
+      <dt>\(\lambda\in[0,1]\)</dt><dd>内插系数</dd>
+      </dl>
+      <div class="ml-formula">\[ f\big(\lambda x+(1-\lambda)y\big)\;\le\;\lambda f(x)+(1-\lambda)f(y) \]</div>
+      <p class="ml-plain">凸目标 + 凸约束 ⇒ KKT 条件既必要又充分，驻点就是全局最优。这是「直接上拉格朗日」的合法性依据。</p>
+      <ul class="ml-pit">
+      <li>要<strong>严格</strong>凹才有唯一最优，否则可能一整段都是最优解。</li>
+      <li>神经网络的损失一般非凸，此时 KKT 只是必要条件，不能用来宣称找到全局最优。</li>
+      </ul>
+      <p class="ml-where">DPO 逐 prompt 的目标含负熵项、严格凹，约束是概率单纯形（凸）——所以第一步的推导是真解而非启发式。</p>
+      <p class="ml-rel">相关：<a href="#kkt">KKT 条件</a>、<a href="#lagrange">拉格朗日乘子</a>、<a href="#closed-form">闭式解</a></p>
+      </article>
+      <article class="ml-card" id="lagrange" data-topic="opt" data-search="拉格朗日乘子 lagrange multiplier 把约束吸收进目标函数，用乘子表示「放松这个约束值多少」。 \lambda 约束的乘子（影子价格），对每个约束单独取 g_i(x)=0 等式约束 乘子是对每个约束单独取的，不是全局一个常数。 只有在约束资格条件（constraint qualification）满足时，kkt 才是必要条件。 dpo 推导公式 (4)：把归一化约束 \(\sum_y\pi(y\mid x)=1\) 吸收进去，解出 λ 后由归一化定死。 优化与凸性">
+      <div class="ml-head">
+      <h2>拉格朗日乘子</h2>
+      <span class="ml-en">Lagrange multiplier</span>
+      <span class="ml-tag">优化与凸性</span>
+      </div>
+      <dl class="ml-sym">
+      <dt>\(\lambda\)</dt><dd>约束的乘子（影子价格），对每个约束单独取</dd>
+      <dt>\(g_i(x)=0\)</dt><dd>等式约束</dd>
+      </dl>
+      <div class="ml-formula">\[ \mathcal{L}(x,\lambda)=f(x)+\sum_i\lambda_i\,g_i(x) \]</div>
+      <p class="ml-plain">把约束吸收进目标函数，用乘子表示「放松这个约束值多少」。</p>
+      <ul class="ml-pit">
+      <li>乘子是对<strong>每个约束</strong>单独取的，不是全局一个常数。</li>
+      <li>只有在约束资格条件（constraint qualification）满足时，KKT 才是必要条件。</li>
+      </ul>
+      <p class="ml-where">DPO 推导公式 (4)：把归一化约束 \(\sum_y\pi(y\mid x)=1\) 吸收进去，解出 λ 后由归一化定死。</p>
+      <p class="ml-rel">相关：<a href="#kkt">KKT 条件</a>、<a href="#convexity">凸性与唯一最优</a></p>
+      </article>
+      <article class="ml-card" id="kkt" data-topic="opt" data-search="kkt 条件 karush–kuhn–tucker conditions 约束优化最优性的一阶条件。互补松弛 \(\lambda_i g_i=0\) 说的是：没有起作用的约束，乘子为 0。 \nabla f 目标梯度 \lambda_i\ge 0 不等式约束的乘子非负 \lambda_i g_i=0 互补松弛 凸问题里它必要且充分；非凸问题里只是必要。 「互补松弛」是理解「投影不活跃就不动手」的关键。 逐题投影里「投影系数为 0 的不活跃对照」正是互补松弛的表现：该题本来就没被伤到，约束不起作用。 优化与凸性">
+      <div class="ml-head">
+      <h2>KKT 条件</h2>
+      <span class="ml-en">Karush–Kuhn–Tucker conditions</span>
+      <span class="ml-tag">优化与凸性</span>
+      </div>
+      <dl class="ml-sym">
+      <dt>\(\nabla f\)</dt><dd>目标梯度</dd>
+      <dt>\(\lambda_i\ge 0\)</dt><dd>不等式约束的乘子非负</dd>
+      <dt>\(\lambda_i g_i=0\)</dt><dd>互补松弛</dd>
+      </dl>
+      <div class="ml-formula">\[ \nabla f(x^*)+\sum_i\lambda_i\nabla g_i(x^*)=0,\qquad \lambda_i\ge 0,\qquad \lambda_i g_i(x^*)=0 \]</div>
+      <p class="ml-plain">约束优化最优性的一阶条件。互补松弛 \(\lambda_i g_i=0\) 说的是：<strong>没有起作用的约束，乘子为 0</strong>。</p>
+      <ul class="ml-pit">
+      <li>凸问题里它必要且充分；非凸问题里只是必要。</li>
+      <li>「互补松弛」是理解「投影不活跃就不动手」的关键。</li>
+      </ul>
+      <p class="ml-where">逐题投影里「投影系数为 0 的不活跃对照」正是互补松弛的表现：该题本来就没被伤到，约束不起作用。</p>
+      <p class="ml-rel">相关：<a href="#lagrange">拉格朗日乘子</a>、<a href="#convexity">凸性与唯一最优</a>、<a href="#projection">向半空间投影</a></p>
+      </article>
+      <article class="ml-card" id="projection" data-topic="opt" data-search="向半空间投影 projection onto a half-space 把点投到满足 \(g^{\top}x\le b\) 的最近位置：做法是沿 g 方向删掉越界的那一部分分量。 g 约束的法方向（也是该点上升最快的方向） x&#x27; 投影后的点 多个约束时不是逐条投影一次就对，要迭代（dykstra／pocs）或解二次规划。 投影的对象是「参数位移」，不是原始梯度——和梯度裁剪是两回事：裁剪限范数（对所有方向一视同仁），投影只删有害方向。 逐题投影的闭式解就是 \(b=0\) 的情形：把更新里会造成某道源题一阶恶化的方向分量减掉。 优化与凸性">
+      <div class="ml-head">
+      <h2>向半空间投影</h2>
+      <span class="ml-en">projection onto a half-space</span>
+      <span class="ml-tag">优化与凸性</span>
+      </div>
+      <dl class="ml-sym">
+      <dt>\(g\)</dt><dd>约束的法方向（也是该点上升最快的方向）</dd>
+      <dt>\(x&#x27;\)</dt><dd>投影后的点</dd>
+      </dl>
+      <div class="ml-formula">\[ g^{\top}x&gt;b\;\Longrightarrow\;x&#x27;=x-\frac{g^{\top}x-b}{\|g\|^{2}}\,g \]</div>
+      <p class="ml-plain">把点投到满足 \(g^{\top}x\le b\) 的最近位置：做法是沿 g 方向删掉越界的那一部分分量。</p>
+      <ul class="ml-pit">
+      <li>多个约束时<strong>不是逐条投影一次就对</strong>，要迭代（Dykstra／POCS）或解二次规划。</li>
+      <li>投影的对象是「参数位移」，不是原始梯度——和梯度裁剪是两回事：裁剪限范数（对所有方向一视同仁），投影只删有害方向。</li>
+      </ul>
+      <p class="ml-where">逐题投影的闭式解就是 \(b=0\) 的情形：把更新里会造成某道源题一阶恶化的方向分量减掉。</p>
+      <p class="ml-rel">相关：<a href="#kkt">KKT 条件</a>、<a href="#qp">二次规划 QP</a>、<a href="#first-order">一阶近似（线性化）</a></p>
+      </article>
+      <article class="ml-card" id="first-order" data-topic="opt" data-search="一阶近似（线性化） first-order approximation 用梯度预测小步长带来的函数变化——梯度法的一切依据。 \nabla f(x) 当前点的梯度 \delta 参数更新量 只在小步长下准。一阶不增不保证有限步不增，因为二阶及以上项被丢掉了。 所以「一阶预测改善」和「实际行为改善」是两件事，必须分别测量。 逐题投影的保护条件 \(g_i^{\top}\delta\le 0\) 就是「一阶预测下这道题不恶化」；这条边界是你们报告里明确写出的限制。 优化与凸性">
+      <div class="ml-head">
+      <h2>一阶近似（线性化）</h2>
+      <span class="ml-en">first-order approximation</span>
+      <span class="ml-tag">优化与凸性</span>
+      </div>
+      <dl class="ml-sym">
+      <dt>\(\nabla f(x)\)</dt><dd>当前点的梯度</dd>
+      <dt>\(\Delta\)</dt><dd>参数更新量</dd>
+      </dl>
+      <div class="ml-formula">\[ f(x+\Delta)\;\approx\;f(x)+\nabla f(x)^{\top}\Delta \]</div>
+      <p class="ml-plain">用梯度预测小步长带来的函数变化——梯度法的一切依据。</p>
+      <ul class="ml-pit">
+      <li>只在小步长下准。<strong>一阶不增不保证有限步不增</strong>，因为二阶及以上项被丢掉了。</li>
+      <li>所以「一阶预测改善」和「实际行为改善」是两件事，必须分别测量。</li>
+      </ul>
+      <p class="ml-where">逐题投影的保护条件 \(g_i^{\top}\Delta\le 0\) 就是「一阶预测下这道题不恶化」；这条边界是你们报告里明确写出的限制。</p>
+      <p class="ml-rel">相关：<a href="#projection">向半空间投影</a>、<a href="#adam">梯度下降与 Adam</a></p>
+      </article>
+      <article class="ml-card" id="qp" data-topic="opt" data-search="二次规划 qp quadratic programming 二次目标 + 线性约束。多个半空间约束下「找离候选点最近的可行点」就是它的特例。 c 候选更新（adam 给的） a\delta\le b 线性约束组 约束数变大时求解成本上升；实践里常用迭代投影近似而不精确求解。 约束互相矛盾时可行集为空，需要松弛或优先级。 多道保护题同时约束时，逐题投影求解的就是这个；单约束时退化成闭式投影。 优化与凸性">
+      <div class="ml-head">
+      <h2>二次规划 QP</h2>
+      <span class="ml-en">quadratic programming</span>
+      <span class="ml-tag">优化与凸性</span>
+      </div>
+      <dl class="ml-sym">
+      <dt>\(c\)</dt><dd>候选更新（Adam 给的）</dd>
+      <dt>\(A\Delta\le b\)</dt><dd>线性约束组</dd>
+      </dl>
+      <div class="ml-formula">\[ \min_{\Delta}\ \tfrac12\|\Delta-c\|^{2}\quad\text{s.t.}\quad A\Delta\le b \]</div>
+      <p class="ml-plain">二次目标 + 线性约束。多个半空间约束下「找离候选点最近的可行点」就是它的特例。</p>
+      <ul class="ml-pit">
+      <li>约束数变大时求解成本上升；实践里常用迭代投影近似而不精确求解。</li>
+      <li>约束互相矛盾时可行集为空，需要松弛或优先级。</li>
+      </ul>
+      <p class="ml-where">多道保护题同时约束时，逐题投影求解的就是这个；单约束时退化成闭式投影。</p>
+      <p class="ml-rel">相关：<a href="#projection">向半空间投影</a>、<a href="#kkt">KKT 条件</a></p>
+      </article>
+      <article class="ml-card" id="adam" data-topic="opt" data-search="梯度下降与 adam gradient descent / adam 用梯度的历史一阶／二阶矩做逐参数自适应缩放：梯度大的参数步子自动缩小。 m_t,v_t 一阶、二阶矩估计 \hat m_t,\hat v_t 偏差修正后的估计 \eta,\epsilon 学习率、数值稳定项 逐参数缩放带来近似尺度不变性（梯度整体乘 c，更新几乎不变）。 adam 只看到批次的平均梯度，结构上无法知道「哪一条样本被牺牲」——这是平均改善掩盖个别退化的机制来源。 环节 a：普通优化与逐题投影的对照基线；投影是叠在 adam 候选更新之上的修正层。 优化与凸性">
+      <div class="ml-head">
+      <h2>梯度下降与 Adam</h2>
+      <span class="ml-en">gradient descent / Adam</span>
+      <span class="ml-tag">优化与凸性</span>
+      </div>
+      <dl class="ml-sym">
+      <dt>\(m_t,v_t\)</dt><dd>一阶、二阶矩估计</dd>
+      <dt>\(\hat m_t,\hat v_t\)</dt><dd>偏差修正后的估计</dd>
+      <dt>\(\eta,\epsilon\)</dt><dd>学习率、数值稳定项</dd>
+      </dl>
+      <div class="ml-formula">\[ \theta_{t+1}=\theta_t-\eta\,\frac{\hat m_t}{\sqrt{\hat v_t}+\epsilon} \]</div>
+      <p class="ml-plain">用梯度的历史一阶／二阶矩做逐参数自适应缩放：梯度大的参数步子自动缩小。</p>
+      <ul class="ml-pit">
+      <li>逐参数缩放带来近似尺度不变性（梯度整体乘 c，更新几乎不变）。</li>
+      <li><strong>Adam 只看到批次的平均梯度</strong>，结构上无法知道「哪一条样本被牺牲」——这是平均改善掩盖个别退化的机制来源。</li>
+      </ul>
+      <p class="ml-where">环节 A：普通优化与逐题投影的对照基线；投影是叠在 Adam 候选更新之上的修正层。</p>
+      <p class="ml-rel">相关：<a href="#first-order">一阶近似（线性化）</a>、<a href="#backward-pass">反向传播</a></p>
+      </article>
+      <article class="ml-card" id="chain-rule" data-topic="calc" data-search="链式法则 chain rule 复合函数的导数 = 各层局部导数依次相乘。反向传播的全部内容就是它。 \partial z/\partial y 局部导数（雅可比） \partial y/\partial x 下一层局部导数 矩阵情形是雅可比相乘，顺序不能颠倒。 多变量时要区分偏导与全导；共享参数的路径要相加（不是相乘）。 π_θ 的梯度靠它从损失一路传回 θ 的每个元素。 微积分与自动微分">
+      <div class="ml-head">
+      <h2>链式法则</h2>
+      <span class="ml-en">chain rule</span>
+      <span class="ml-tag">微积分与自动微分</span>
+      </div>
+      <dl class="ml-sym">
+      <dt>\(\partial z/\partial y\)</dt><dd>局部导数（雅可比）</dd>
+      <dt>\(\partial y/\partial x\)</dt><dd>下一层局部导数</dd>
+      </dl>
+      <div class="ml-formula">\[ \frac{\partial z}{\partial x}=\frac{\partial z}{\partial y}\cdot\frac{\partial y}{\partial x} \]</div>
+      <p class="ml-plain">复合函数的导数 = 各层局部导数依次相乘。反向传播的全部内容就是它。</p>
+      <ul class="ml-pit">
+      <li>矩阵情形是雅可比相乘，<strong>顺序不能颠倒</strong>。</li>
+      <li>多变量时要区分偏导与全导；共享参数的路径要<strong>相加</strong>（不是相乘）。</li>
+      </ul>
+      <p class="ml-where">π_θ 的梯度靠它从损失一路传回 θ 的每个元素。</p>
+      <p class="ml-rel">相关：<a href="#forward-pass">前向传播</a>、<a href="#backward-pass">反向传播</a>、<a href="#softmax-jacobian">log-softmax 的导数</a></p>
+      </article>
+      <article class="ml-card" id="forward-pass" data-topic="calc" data-search="前向传播 forward pass 从输入逐层算到损失；每一层只用上一层的输出。这一遍的目的就是拿到损失值。 z_1,a_1 第一层的线性输出与激活 \mathcal{l} 损失值 前向本身不产生梯度；要建计算图才能反向。 中间激活必须留着给反向用——这就是训练显存远大于推理显存的根本原因（梯度检查点是用算力换显存）。 一次 dpo 更新里，对 π_θ 做 2 次前向、对 π_ref 也做 2 次（后者冻结，可预先缓存）。 微积分与自动微分">
+      <div class="ml-head">
+      <h2>前向传播</h2>
+      <span class="ml-en">forward pass</span>
+      <span class="ml-tag">微积分与自动微分</span>
+      </div>
+      <dl class="ml-sym">
+      <dt>\(z_1,a_1\)</dt><dd>第一层的线性输出与激活</dd>
+      <dt>\(\mathcal{L}\)</dt><dd>损失值</dd>
+      </dl>
+      <div class="ml-formula">\[ x\;\to\;z_1\;\to\;a_1\;\to\;z_2\;\to\;\hat y\;\to\;\mathcal{L} \]</div>
+      <p class="ml-plain">从输入逐层算到损失；每一层只用上一层的输出。这一遍的目的就是拿到损失值。</p>
+      <ul class="ml-pit">
+      <li>前向本身不产生梯度；要建计算图才能反向。</li>
+      <li><strong>中间激活必须留着给反向用</strong>——这就是训练显存远大于推理显存的根本原因（梯度检查点是用算力换显存）。</li>
+      </ul>
+      <p class="ml-where">一次 DPO 更新里，对 π_θ 做 2 次前向、对 π_ref 也做 2 次（后者冻结，可预先缓存）。</p>
+      <p class="ml-rel">相关：<a href="#backward-pass">反向传播</a>、<a href="#chain-rule">链式法则</a></p>
+      </article>
+      <article class="ml-card" id="backward-pass" data-topic="calc" data-search="反向传播 backpropagation 从损失出发把梯度往回传。每个节点的 \(\partial\mathcal{l}/\partial(\text{节点})\) 只算一次，被它的所有输入复用——这是动态规划，所以代价只有一次前向的约 2 倍。 \frac{\partial\mathcal{l}}{\partial a_1} 损失的敏感度，从损失那端算起 w_1 第一层权重 反向传播只算梯度，不改参数。 改参数是优化器（optimizer.step()）干的，这是最常见的误解。 必须从后往前：链式乘积里第一个因子只能从损失那端算起。 一次 dpo 更新：π_θ 需要 2 次前向 + 1 次反向；π_ref 只前向（冻结 ⇒ 不进梯度）。 微积分与自动微分">
+      <div class="ml-head">
+      <h2>反向传播</h2>
+      <span class="ml-en">backpropagation</span>
+      <span class="ml-tag">微积分与自动微分</span>
+      </div>
+      <dl class="ml-sym">
+      <dt>\(\frac{\partial\mathcal{L}}{\partial a_1}\)</dt><dd>损失的敏感度，从损失那端算起</dd>
+      <dt>\(w_1\)</dt><dd>第一层权重</dd>
+      </dl>
+      <div class="ml-formula">\[ \frac{\partial\mathcal{L}}{\partial w_1}=\underbrace{\frac{\partial\mathcal{L}}{\partial a_1}}_{\text{从损失来}}\cdot\frac{\partial a_1}{\partial z_1}\cdot\frac{\partial z_1}{\partial w_1} \]</div>
+      <p class="ml-plain">从损失出发把梯度往回传。每个节点的 \(\partial\mathcal{L}/\partial(\text{节点})\) 只算一次，被它的所有输入复用——这是动态规划，所以代价只有一次前向的约 2 倍。</p>
+      <ul class="ml-pit">
+      <li><strong>反向传播只算梯度，不改参数。</strong> 改参数是优化器（<code>optimizer.step()</code>）干的，这是最常见的误解。</li>
+      <li>必须从后往前：链式乘积里第一个因子只能从损失那端算起。</li>
+      </ul>
+      <p class="ml-where">一次 DPO 更新：π_θ 需要 2 次前向 + <strong>1 次</strong>反向；π_ref 只前向（冻结 ⇒ 不进梯度）。</p>
+      <p class="ml-rel">相关：<a href="#forward-pass">前向传播</a>、<a href="#chain-rule">链式法则</a>、<a href="#adam">梯度下降与 Adam</a></p>
+      </article>
+      <article class="ml-card" id="logsumexp" data-topic="calc" data-search="对数域技巧 log-sum-exp log-sum-exp trick 先减最大值再做指数，避免上溢。它是 softmax 的对数域兄弟。 m 最大值，用于平移 \mathrm{logsumexp} 先指数、再求和、再取对数 不能直接算 \(\log\sum_j e^{z_j}\)（会先 inf）。 \(\mathrm{softmax}=\nabla\,\mathrm{logsumexp}\)：softmax 就是它的梯度。 几千个小于 1 的数连乘会下溢成 0，取对数后变成加法才安全。 log_softmax 与 logsigmoid 的内部实现；gold nll 里「乘积变求和」也是同一件事。 微积分与自动微分">
+      <div class="ml-head">
+      <h2>对数域技巧 log-sum-exp</h2>
+      <span class="ml-en">log-sum-exp trick</span>
+      <span class="ml-tag">微积分与自动微分</span>
+      </div>
+      <dl class="ml-sym">
+      <dt>\(m\)</dt><dd>最大值，用于平移</dd>
+      <dt>\(\mathrm{logsumexp}\)</dt><dd>先指数、再求和、再取对数</dd>
+      </dl>
+      <div class="ml-formula">\[ \mathrm{logsumexp}(z)=m+\log\sum_j e^{\,z_j-m},\qquad m=\max_j z_j \]</div>
+      <p class="ml-plain">先减最大值再做指数，避免上溢。它是 softmax 的对数域兄弟。</p>
+      <ul class="ml-pit">
+      <li>不能直接算 \(\log\sum_j e^{z_j}\)（会先 inf）。</li>
+      <li>\(\mathrm{softmax}=\nabla\,\mathrm{logsumexp}\)：softmax 就是它的梯度。</li>
+      <li>几千个小于 1 的数<strong>连乘</strong>会下溢成 0，取对数后变成加法才安全。</li>
+      </ul>
+      <p class="ml-where"><code>log_softmax</code> 与 <code>logsigmoid</code> 的内部实现；gold NLL 里「乘积变求和」也是同一件事。</p>
+      <p class="ml-rel">相关：<a href="#softmax">softmax</a>、<a href="#softplus">softplus</a>、<a href="#numerical">数值稳定性（上溢／下溢）</a></p>
+      </article>
+      <article class="ml-card" id="softmax-jacobian" data-topic="calc" data-search="log-softmax 的导数 derivative of log-softmax 输出层的误差信号是 one-hot 减 softmax；配上交叉熵后就是那句著名的 \(\partial\mathcal{l}/\partial z=\hat y-y\)。 \delta_{ky} kronecker delta（k=y 时为 1） p_k softmax 输出的第 k 个分量 这个极简形式只在「softmax 输出 + 交叉熵」配对时成立；换成别的损失就不成立了。 它是反向传播的起点，不是终点——从它开始才逐层乘到各层权重。 所有分类网络与语言模型输出层的梯度；dpo 里 σ 那一支同理（k=2 特例）。 微积分与自动微分">
+      <div class="ml-head">
+      <h2>log-softmax 的导数</h2>
+      <span class="ml-en">derivative of log-softmax</span>
+      <span class="ml-tag">微积分与自动微分</span>
+      </div>
+      <dl class="ml-sym">
+      <dt>\(\delta_{ky}\)</dt><dd>Kronecker delta（k=y 时为 1）</dd>
+      <dt>\(p_k\)</dt><dd>softmax 输出的第 k 个分量</dd>
+      </dl>
+      <div class="ml-formula">\[ \frac{\partial}{\partial z_k}\log\mathrm{softmax}(z)_y=\delta_{ky}-p_k \]</div>
+      <p class="ml-plain">输出层的误差信号是 <strong>one-hot 减 softmax</strong>；配上交叉熵后就是那句著名的 \(\partial\mathcal{L}/\partial z=\hat y-y\)。</p>
+      <ul class="ml-pit">
+      <li>这个极简形式只在「softmax 输出 + 交叉熵」配对时成立；换成别的损失就不成立了。</li>
+      <li>它是<strong>反向传播的起点</strong>，不是终点——从它开始才逐层乘到各层权重。</li>
+      </ul>
+      <p class="ml-where">所有分类网络与语言模型输出层的梯度；DPO 里 σ 那一支同理（K=2 特例）。</p>
+      <p class="ml-rel">相关：<a href="#chain-rule">链式法则</a>、<a href="#bce">二元交叉熵 BCE</a>、<a href="#backward-pass">反向传播</a></p>
+      </article>
+      <article class="ml-card" id="numerical" data-topic="num" data-search="数值稳定性（上溢／下溢） numerical stability 浮点数的指数范围有限，所以一切含 exp 的式子都要想办法把指数挪到非正区间。 e^{z} 指数函数，浮点范围有限 \(\log(\mathrm{sigmoid}(z))\) 在 z 很负时会变成 -inf——必须用 logsigmoid。 \(\log(\mathrm{softmax}(x))\) 同理，要用 log_softmax。 dpo 的实现要点：损失一律用 logsigmoid / log_softmax，不写嵌套的 log∘sigmoid。 数值与精度">
+      <div class="ml-head">
+      <h2>数值稳定性（上溢／下溢）</h2>
+      <span class="ml-en">numerical stability</span>
+      <span class="ml-tag">数值与精度</span>
+      </div>
+      <dl class="ml-sym">
+      <dt>\(e^{z}\)</dt><dd>指数函数，浮点范围有限</dd>
+      </dl>
+      <div class="ml-formula">\[ e^{z}\ \text{上溢于}\ z\gtrsim 709,\qquad e^{z}\ \text{下溢于}\ z\lesssim -745 \]</div>
+      <p class="ml-plain">浮点数的指数范围有限，所以一切含 exp 的式子都要想办法把指数挪到非正区间。</p>
+      <ul class="ml-pit">
+      <li>\(\log(\mathrm{sigmoid}(z))\) 在 z 很负时会变成 <code>-inf</code>——必须用 <code>logsigmoid</code>。</li>
+      <li>\(\log(\mathrm{softmax}(x))\) 同理，要用 <code>log_softmax</code>。</li>
+      </ul>
+      <p class="ml-where">DPO 的实现要点：损失一律用 <code>logsigmoid</code> / <code>log_softmax</code>，不写嵌套的 log∘sigmoid。</p>
+      <p class="ml-rel">相关：<a href="#logsumexp">对数域技巧 log-sum-exp</a>、<a href="#softplus">softplus</a>、<a href="#float-precision">浮点精度（FP32／TF32／BF16）</a></p>
+      </article>
+      <article class="ml-card" id="float-precision" data-topic="num" data-search="浮点精度（fp32／tf32／bf16） floating point precision 精度决定「多小的差异还能被分辨」。同一个公式在不同精度下可能给出不同的数值结果。 尾数位数 决定能分辨多小的差异 tf32 静默降低矩阵乘精度 tf32 会静默降低矩阵乘精度，不报错但结果不同。 累积误差会让「精确复现」失效——逐位复现依赖的不只是代码，还有精度设置。 你们的 fp32 投影与数值可靠性核查；248/248 逐位复现的可信度建立在这一层控制上。 数值与精度">
+      <div class="ml-head">
+      <h2>浮点精度（FP32／TF32／BF16）</h2>
+      <span class="ml-en">floating point precision</span>
+      <span class="ml-tag">数值与精度</span>
+      </div>
+      <dl class="ml-sym">
+      <dt>\(尾数位数\)</dt><dd>决定能分辨多小的差异</dd>
+      <dt>\(TF32\)</dt><dd>静默降低矩阵乘精度</dd>
+      </dl>
+      <div class="ml-formula">\[ \text{FP32}:24\ \text{位尾数}\qquad \text{BF16}:8\ \text{位} \]</div>
+      <p class="ml-plain">精度决定「多小的差异还能被分辨」。同一个公式在不同精度下可能给出不同的数值结果。</p>
+      <ul class="ml-pit">
+      <li>TF32 会<strong>静默</strong>降低矩阵乘精度，不报错但结果不同。</li>
+      <li>累积误差会让「精确复现」失效——逐位复现依赖的不只是代码，还有精度设置。</li>
+      </ul>
+      <p class="ml-where">你们的 FP32 投影与数值可靠性核查；248/248 逐位复现的可信度建立在这一层控制上。</p>
+      <p class="ml-rel">相关：<a href="#numerical">数值稳定性（上溢／下溢）</a>、<a href="#adam">梯度下降与 Adam</a></p>
+      </article>
+      <article class="ml-card" id="dpo-loss" data-topic="dpo" data-search="dpo 损失 dpo loss 对「胜者胜」这个标签做二元交叉熵，喂进去的 logit 是隐式奖励差：\(\mathcal{l}=\mathrm{bce}(\sigma(\beta\delta),1)\)。 \beta kl 强度（同时是温度），不是 margin \delta_{\mathrm{dpo}} 隐式奖励差（校正后的 margin） β 不是间隔阈值；σ 的中点固定在 δ=0，均衡点的间隔由数据决定。 dpo 损失的最优参数没有闭式解，仍要 sgd——有闭式解的是「给定奖励时的最优策略」。 标签恒为 1，所以不存在类别不平衡问题。 你的主线方法；梯度里 \(\sigma(-\beta\delta)\) 是「当前把输家排在赢家前面」的概率，即权重。 偏好优化">
+      <div class="ml-head">
+      <h2>DPO 损失</h2>
+      <span class="ml-en">DPO loss</span>
+      <span class="ml-tag">偏好优化</span>
+      </div>
+      <dl class="ml-sym">
+      <dt>\(\beta\)</dt><dd>KL 强度（同时是温度），<strong>不是 margin</strong></dd>
+      <dt>\(\Delta_{\mathrm{DPO}}\)</dt><dd>隐式奖励差（校正后的 margin）</dd>
+      </dl>
+      <div class="ml-formula">\[ \mathcal{L}_{\mathrm{DPO}}=-\,\mathbb{E}\Big[\log\sigma\big(\beta\,\Delta_{\mathrm{DPO}}\big)\Big] \]</div>
+      <p class="ml-plain">对「胜者胜」这个标签做<strong>二元交叉熵</strong>，喂进去的 logit 是隐式奖励差：\(\mathcal{L}=\mathrm{BCE}(\sigma(\beta\Delta),1)\)。</p>
+      <ul class="ml-pit">
+      <li>β 不是间隔阈值；σ 的中点固定在 Δ=0，均衡点的间隔由数据决定。</li>
+      <li><strong>DPO 损失的最优参数没有闭式解</strong>，仍要 SGD——有闭式解的是「给定奖励时的最优策略」。</li>
+      <li>标签恒为 1，所以不存在类别不平衡问题。</li>
+      </ul>
+      <p class="ml-where">你的主线方法；梯度里 \(\sigma(-\beta\Delta)\) 是「当前把输家排在赢家前面」的概率，即权重。</p>
+      <p class="ml-rel">相关：<a href="#bce">二元交叉熵 BCE</a>、<a href="#implicit-reward">隐式奖励</a>、<a href="#margin">margin 与 margin loss</a>、<a href="#partition">配分函数与它的对消</a></p>
+      </article>
+      <article class="ml-card" id="implicit-reward" data-topic="dpo" data-search="隐式奖励 implicit reward 奖励不是独立于策略的东西——给定最优策略，奖励可以被它反解出来。丢掉的那个 \(\beta\log z(x)\) 只依赖 x，落在不可识别的规范自由度里。 \hat r_\theta 由策略与参考策略的对数比反解出的奖励 \pi_{\mathrm{ref}} 冻结的参考模型 只在同一条 prompt 内可识别；跨 prompt 比较会差一个未知的 \(\beta\log z(x)\)。 奖励只在「同题差」意义下唯一，给它加任意只依赖 x 的函数都不改变偏好与最优策略。 dpo 推导第二步；它也可以直接当奖励模型用于 best-of-n 重排或喂给 ppo。 偏好优化">
+      <div class="ml-head">
+      <h2>隐式奖励</h2>
+      <span class="ml-en">implicit reward</span>
+      <span class="ml-tag">偏好优化</span>
+      </div>
+      <dl class="ml-sym">
+      <dt>\(\hat r_\theta\)</dt><dd>由策略与参考策略的对数比反解出的奖励</dd>
+      <dt>\(\pi_{\mathrm{ref}}\)</dt><dd>冻结的参考模型</dd>
+      </dl>
+      <div class="ml-formula">\[ \hat r_\theta(x,y)=\beta\log\frac{\pi_\theta(y\mid x)}{\pi_{\mathrm{ref}}(y\mid x)} \]</div>
+      <p class="ml-plain">奖励不是独立于策略的东西——给定最优策略，奖励可以被它反解出来。丢掉的那个 \(\beta\log Z(x)\) 只依赖 x，落在不可识别的规范自由度里。</p>
+      <ul class="ml-pit">
+      <li>只在<strong>同一条 prompt 内</strong>可识别；跨 prompt 比较会差一个未知的 \(\beta\log Z(x)\)。</li>
+      <li>奖励只在「同题差」意义下唯一，给它加任意只依赖 x 的函数都不改变偏好与最优策略。</li>
+      </ul>
+      <p class="ml-where">DPO 推导第二步；它也可以直接当奖励模型用于 Best-of-n 重排或喂给 PPO。</p>
+      <p class="ml-rel">相关：<a href="#dpo-loss">DPO 损失</a>、<a href="#partition">配分函数与它的对消</a>、<a href="#margin">margin 与 margin loss</a></p>
+      </article>
+      <article class="ml-card" id="margin" data-topic="dpo" data-search="margin 与 margin loss margin / margin loss margin 是量（分数差），margin loss 是作用于这个量的损失。 前者不是损失函数。 m_\theta 序列 margin：两个回答的对数概率差 \delta margin loss 作用的自变量 不要写「dpo 的 margin loss」——dpo 损失里没有可调的 margin 阈值。 hinge 有真空区（达标后梯度精确为 0）；softplus 永不归零，只是一直变小。 真正显式带 δ 的偏好损失是 slic 那一支：\(\max(0,\delta-\log p(y_w)+\log p(y_l))\)，而且它不含 π_ref。 你们监控的 margin；注意它和 dpo 损失的自变量差一个 π_ref 的 margin（常数），而那个常数随 β 变。 偏好优化">
+      <div class="ml-head">
+      <h2>margin 与 margin loss</h2>
+      <span class="ml-en">margin / margin loss</span>
+      <span class="ml-tag">偏好优化</span>
+      </div>
+      <dl class="ml-sym">
+      <dt>\(m_\theta\)</dt><dd>序列 margin：两个回答的对数概率差</dd>
+      <dt>\(\Delta\)</dt><dd>margin loss 作用的自变量</dd>
+      </dl>
+      <div class="ml-formula">\[ m_\theta=\log\pi_\theta(y_w\mid x)-\log\pi_\theta(y_l\mid x),\qquad \ell=\max\big(0,\;m-\Delta\big) \]</div>
+      <p class="ml-plain"><strong>margin 是量（分数差），margin loss 是作用于这个量的损失。</strong> 前者不是损失函数。</p>
+      <ul class="ml-pit">
+      <li>不要写「DPO 的 margin loss」——DPO 损失里没有可调的 margin 阈值。</li>
+      <li>hinge 有真空区（达标后梯度精确为 0）；softplus 永不归零，只是一直变小。</li>
+      <li>真正显式带 δ 的偏好损失是 SLiC 那一支：\(\max(0,\delta-\log P(y_w)+\log P(y_l))\)，而且它不含 π_ref。</li>
+      </ul>
+      <p class="ml-where">你们监控的 margin；注意它和 DPO 损失的自变量差一个 π_ref 的 margin（常数），而那个常数随 β 变。</p>
+      <p class="ml-rel">相关：<a href="#dpo-loss">DPO 损失</a>、<a href="#implicit-reward">隐式奖励</a>、<a href="#bt">Bradley–Terry 模型</a></p>
+      </article>
+      <article class="ml-card" id="partition" data-topic="dpo" data-search="配分函数与它的对消 partition function and its cancellation 最优策略的归一化常数。它要对所有可能的回答求和，指数级不可计算。 z(x) 归一化常数，对全部回答求和 r(x,y) 奖励 dpo 没有算出它，只是借用了闭式解的形式做重参数化，让它在同题偏好对相减时对消。 一旦需要奖励的绝对值（跨 prompt 比较、当全局奖励模型用），这个未知项就会回来。 dpo 能在没有奖励模型的情况下成立的关键一步；对消的原因是偏好对共享同一个 x。 偏好优化">
+      <div class="ml-head">
+      <h2>配分函数与它的对消</h2>
+      <span class="ml-en">partition function and its cancellation</span>
+      <span class="ml-tag">偏好优化</span>
+      </div>
+      <dl class="ml-sym">
+      <dt>\(Z(x)\)</dt><dd>归一化常数，对全部回答求和</dd>
+      <dt>\(r(x,y)\)</dt><dd>奖励</dd>
+      </dl>
+      <div class="ml-formula">\[ Z(x)=\sum_y \pi_{\mathrm{ref}}(y\mid x)\exp\!\Big(\frac{r(x,y)}{\beta}\Big) \]</div>
+      <p class="ml-plain">最优策略的归一化常数。它要对<strong>所有可能的回答</strong>求和，指数级不可计算。</p>
+      <ul class="ml-pit">
+      <li>DPO <strong>没有算出它</strong>，只是借用了闭式解的形式做重参数化，让它在同题偏好对相减时对消。</li>
+      <li>一旦需要奖励的<strong>绝对值</strong>（跨 prompt 比较、当全局奖励模型用），这个未知项就会回来。</li>
+      </ul>
+      <p class="ml-where">DPO 能在没有奖励模型的情况下成立的关键一步；对消的原因是偏好对共享同一个 x。</p>
+      <p class="ml-rel">相关：<a href="#implicit-reward">隐式奖励</a>、<a href="#closed-form">闭式解</a>、<a href="#dpo-loss">DPO 损失</a></p>
+      </article>
+      <article class="ml-card" id="seq-prob" data-topic="dpo" data-search="序列概率的乘积分解 factorization of sequence probability 整条回答的概率等于逐 token 条件概率的乘积；取对数后变成求和。gold nll 就是 \(-\log\pi_\theta(y_w\mid x)\)。 t 回答的 token 数 y_{&lt;t} 该位置之前的 token 取负对数后是逐 token 求和，所以回答越长 nll 的数值基线越大——跨长度的绝对值不可直接比较。 实现里绝不能真去连乘（会下溢），一律取对数求和。 dpo 里那四个 log 概率都是这样算出来的；也是 gold nll 这条保护信号的来源。 偏好优化">
+      <div class="ml-head">
+      <h2>序列概率的乘积分解</h2>
+      <span class="ml-en">factorization of sequence probability</span>
+      <span class="ml-tag">偏好优化</span>
+      </div>
+      <dl class="ml-sym">
+      <dt>\(T\)</dt><dd>回答的 token 数</dd>
+      <dt>\(y_{&lt;t}\)</dt><dd>该位置之前的 token</dd>
+      </dl>
+      <div class="ml-formula">\[ \pi_\theta(y\mid x)=\prod_{t=1}^{T}\pi_\theta(y_t\mid x,y_{&lt;t}) \]</div>
+      <p class="ml-plain">整条回答的概率等于逐 token 条件概率的乘积；取对数后变成<strong>求和</strong>。gold NLL 就是 \(-\log\pi_\theta(y_w\mid x)\)。</p>
+      <ul class="ml-pit">
+      <li>取负对数后是<strong>逐 token 求和</strong>，所以回答越长 NLL 的数值基线越大——跨长度的绝对值不可直接比较。</li>
+      <li>实现里绝不能真去连乘（会下溢），一律取对数求和。</li>
+      </ul>
+      <p class="ml-where">DPO 里那四个 log 概率都是这样算出来的；也是 gold NLL 这条保护信号的来源。</p>
+      <p class="ml-rel">相关：<a href="#cross-entropy-kl">熵、交叉熵与 KL</a>、<a href="#local-token">局部 token 信号</a>、<a href="#logsumexp">对数域技巧 log-sum-exp</a></p>
+      </article>
+      <article class="ml-card" id="local-token" data-topic="dpo" data-search="局部 token 信号 local token margin 关键位置上正确 token 相对最强竞争 token 的决策余量：\(q_t&gt;0\) 恰好等价于该位置选对，\(q_t\) 的大小表示赢得有多稳。 z_t(k) 位置 t 上 token k 的得分（logit） q_t 正确 token 相对最强竞争者的优势 它是余量，不是概率——不要和 \(\mathrm{softmax}\) 输出的概率混。 \(q_t\) 大不代表整段回答概率高（那是 gold nll 管的）；两者是两个层面。 需要固定位置选择规则，并在独立新题上验证迁移效果。 环节 c 的补充保护信号；也可以用它计算「要多大的扰动才能改变行为」这个分辨力下限。 偏好优化">
+      <div class="ml-head">
+      <h2>局部 token 信号</h2>
+      <span class="ml-en">local token margin</span>
+      <span class="ml-tag">偏好优化</span>
+      </div>
+      <dl class="ml-sym">
+      <dt>\(z_t(k)\)</dt><dd>位置 t 上 token k 的得分（logit）</dd>
+      <dt>\(q_t\)</dt><dd>正确 token 相对最强竞争者的优势</dd>
+      </dl>
+      <div class="ml-formula">\[ q_t=z_t(\mathrm{gold})-\max_{k\neq\mathrm{gold}}z_t(k) \]</div>
+      <p class="ml-plain">关键位置上正确 token 相对最强竞争 token 的<strong>决策余量</strong>：\(q_t&gt;0\) 恰好等价于该位置选对，\(q_t\) 的大小表示赢得有多稳。</p>
+      <ul class="ml-pit">
+      <li>它是余量，不是概率——不要和 \(\mathrm{softmax}\) 输出的概率混。</li>
+      <li>\(q_t\) 大不代表整段回答概率高（那是 gold NLL 管的）；两者是两个层面。</li>
+      <li>需要<strong>固定位置选择规则</strong>，并在独立新题上验证迁移效果。</li>
+      </ul>
+      <p class="ml-where">环节 C 的补充保护信号；也可以用它计算「要多大的扰动才能改变行为」这个分辨力下限。</p>
+      <p class="ml-rel">相关：<a href="#logits">logits（得分）</a>、<a href="#seq-prob">序列概率的乘积分解</a>、<a href="#dpo-loss">DPO 损失</a></p>
+      </article>
+  </div>
+  <p class="ml-meta">本页由 <code>math/generate_math.py</code> 生成，内容源是 <code>math/data/library.py</code>（唯一真值）。要增删条目请改数据文件后重新生成，不要手改本页。</p>
+</main>
+<script>
+(function () {
+  var box = document.getElementById('ml-q');
+  var list = document.getElementById('ml-list');
+  if (!box || !list) return;
+  var cards = [].slice.call(list.querySelectorAll('.ml-card'));
+  var countEl = document.getElementById('ml-count');
+  var nohit = document.getElementById('ml-nohit');
+  var btns = [].slice.call(document.querySelectorAll('[data-ml-topic]'));
+  var topic = 'all';
+  function apply() {
+    var q = box.value.trim().toLowerCase();
+    var shown = 0;
+    cards.forEach(function (c) {
+      var okTopic = topic === 'all' || c.getAttribute('data-topic') === topic;
+      var okQ = !q || (c.getAttribute('data-search') || '').indexOf(q) !== -1;
+      var show = okTopic && okQ;
+      if (show) { c.removeAttribute('hidden'); shown++; } else { c.setAttribute('hidden', ''); }
+    });
+    countEl.textContent = '显示 ' + shown + ' / ' + cards.length + ' 条';
+    if (nohit) { if (shown === 0) { nohit.removeAttribute('hidden'); } else { nohit.setAttribute('hidden', ''); } }
+  }
+  box.addEventListener('input', apply);
+  btns.forEach(function (b) {
+    b.addEventListener('click', function () {
+      btns.forEach(function (x) { x.classList.remove('active'); });
+      b.classList.add('active');
+      topic = b.getAttribute('data-ml-topic');
+      apply();
+    });
+  });
+  apply();
+})();
+</script>
