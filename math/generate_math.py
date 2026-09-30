@@ -23,6 +23,7 @@ HERE = pathlib.Path(__file__).resolve().parent
 REPO_ROOT = HERE.parent
 OUT = HERE / "index.html"
 
+sys.dont_write_bytecode = True          # 不要在 math/data 下留下 __pycache__
 sys.path.insert(0, str(HERE / "data"))
 import library  # noqa: E402
 

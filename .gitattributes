@@ -3,3 +3,5 @@
 # repository default (LF in the index, CRLF in a Windows working tree).
 .github/workflows/*.yml text eol=lf
 research/*.py           text eol=lf
+math/*.py               text eol=lf
+math/data/*.py          text eol=lf
