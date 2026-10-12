@@ -82,3 +82,15 @@ body.dark { --bg: #1f201e; --surface: #292a27; --text: #eeeeea; --muted: #aaa9a1
 .post-body mjx-container[display="true"] { overflow-x: auto; overflow-y: hidden; padding: 6px 0; }
 .post-body mjx-container mjx-labels { color: var(--muted); }
 @media (max-width: 700px) { .post-body table { display: block; overflow-x: auto; white-space: nowrap; }.post-body blockquote { padding-left: 12px; } }
+
+/* --- 项目卡片（首页 #projects） --- */
+.project-list { border-bottom: 1px solid var(--line); }
+.project-item { display: grid; grid-template-columns: 116px 1fr 30px; gap: 26px; align-items: start; padding: 24px 0; border-top: 1px solid var(--line); }
+.project-meta { color: var(--muted); font-size: .82rem; line-height: 1.7; }
+.project-meta span { color: var(--accent); font-size: .72rem; letter-spacing: .1em; }
+.project-main h3 { font-size: 1.28rem; margin-bottom: 8px; font-weight: 600; }
+.project-main h3 a:hover { color: var(--accent); }
+.project-main p { color: var(--muted); font-size: .94rem; margin: 0 0 10px; line-height: 1.8; }
+.project-tags { display: flex; flex-wrap: wrap; gap: 8px; }
+.project-tags span { border: 1px solid var(--line); color: var(--muted); font-size: .72rem; padding: 3px 8px; }
+@media (max-width: 700px) { .project-item { grid-template-columns: 1fr 25px; gap: 4px 20px; }.project-meta { grid-column: 1 / -1; }.project-main h3 { font-size: 1.12rem; }.project-item .article-arrow { grid-column: 2; grid-row: 2 / span 2; } }
